@@ -13406,19 +13406,23 @@ e'            &amp; 0 &amp; 0            \\
 \end{bmatrix}
 $$<p>其中 $\overline{R}$ 為 $N$ 種資產收益率期望值構成的列向量，$\Sigma$ 為 $N\times N$ 維收益率的共變異數矩陣（Covariance Matrix），$e$ 為 $N\times 1$ 的單位列向量。最終投資比重最優解形式滿足：</p>
 $$\omega^\ast=a+b\overline{R}_p$$<p>其中 $a$ 和 $b$ 與 $N$ 種資產收益率的期望值、變異數、共變異數有關，具體形式也較為複雜 <a href="#fn7"><sup>7</sup></a>。從式 ($\ref{eq:20.8}$) 可以看出，決策量的最優解 $\omega^\ast$ 與投資目標 $\overline{R}_p$ 呈線性關係，而風險 $\sigma^2(R_p)$ 是 $\omega$ 的二次函數形式，因此，當達到最優解時，風險水平 $\sigma^2(R_p)$ 是投資目標 $\overline{R}_p$ 的二次函數形式。如果用圖形表示投資目標 $\overline{R}_p$ 與最優解下標準差的關係，即得圖 20.2：</p>
-<p>圖20.2：只考慮風險資產的效率前緣</p>
+$$沒有圖$$<p>圖20.2：只考慮風險資產的效率前緣</p>
 <blockquote><p><span id=fn7><sup>7</sup> $a\equiv\cfrac{\varsigma\Sigma^{-1}e-\alpha\Sigma^{-1}\overline{R}}{\varsigma\delta-\alpha^2}$，$b\equiv\cfrac{\delta\Sigma^{-1}\overline{R}-\alpha\Sigma^{-1}e}{\varsigma\delta-\alpha^2}$ 其中 $\alpha\equiv\overline{R}'\Sigma^{-1}e$，$\varsigma\equiv\overline{R}'\Sigma^{-1}\overline{R}$，$\delta\equiv e'\Sigma^{-1}e$</span></p>
 </blockquote>
 <p>圖中的曲線為最小變異前緣（Minimum-Variance Frontier），即在特定的投資目標 $\overline{R}_p$ 下能夠令投資組合收益率變異數（標準差）最小的資產配置比例。該線的上半段曲線被稱為效率前緣（Efficient Frontier），效率前緣上的資產配比既可以在特定的投資目標 $\overline{R}_p$ 下達到風險最小，又可以在特定的風險水平下達到期望收益率最大。整個資產配置流程的計算量不小，不過藉助 Python，我們能夠方便快捷地求得想要的結果，在下一節我們將用 Python 來實作 Markowitz 模型之資產配比過程。</p>
 <p>本章行文至此，我們已經瞭解 $N$ 種風險資產下的資產配置過程。不過實務上，還有一個非常重要的、每個人投資人都接觸過的資產－－無風險資產，無風險資產是指無違約風險、收益率確定的資產，比較常見的如銀行存款、政府債券等。如果將無風險資產考慮進投資組合，則投資人面對的決策問題可以表達為：</p>
-$$\min$$<p>此時，投資人在風險資產上的投資比例依舊是 $\omega_1,\omega_2,...,\omega_N$，不過 $\sum_{i=1}^N\omega_i$ 不一定為 1 ，投資人會將 $1-\sum_{i=1}^{N}\omega_i$ 部分的資本投資在無風險資產。模型 ($\ref{eq:20.9}$) 的求解過程與只有風險資產的情況類似，也是用拉格朗日解法，其最優解依舊是投資目標 $\overline{R}_p$ 的線性函數形式：</p>
-$$\omega^\ast$$<p>各參數在前文中有提及，這裡不再重述。將 $\omega^\ast$ 代入最優投資組合的風險表示式 $\sigma_p^2={\omega^\ast}' V\omega^\ast$ 中，經過化簡可以發現，最優投資組合的標準差 $\sigma_p$ 與投資目標 $\overline{R}_p$ 呈線性關係。若用圖形畫出（縱軸為 $\overline{R}_p$，橫軸為 $\sigma_p$），我們可以得到一條線性的效率前緣；而且經過嚴格推導可以發現，考慮無風險資產的效率前緣恰好與捨棄無風險資產的效率前緣相切，如下圖所示。</p>
-<p>圖20.3：考慮無風險資產時的效率前緣
+$$\begin{split}
+&amp;\min_{\omega_i}\sigma^2(R_p)=\sum_{i=1}^{N}\omega_i^2\sigma^2(R_i)+\sum_{i\ne j}\omega_i\omega_j\sigma(R_i,R_j) \\
+&amp;\mathit{s.\!t.}\quad\overline{R}_p=R_f+\sum_{i=1}^{N}\omega_i\big[\mathrm{E}(R_i)-R_f\big]
+\end{split}\label{eq:20.9}\tag{20.9}
+$$<p>此時，投資人在風險資產上的投資比例依舊是 $\omega_1,\omega_2,...,\omega_N$，不過 $\sum_{i=1}^N\omega_i$ 不一定為 1 ，投資人會將 $1-\sum_{i=1}^{N}\omega_i$ 部分的資本投資在無風險資產。模型 ($\ref{eq:20.9}$) 的求解過程與只有風險資產的情況類似，也是用拉格朗日解法，其最優解依舊是投資目標 $\overline{R}_p$ 的線性函數形式：</p>
+$$\omega^\ast=\frac{\overline{R}_p-R_f}{\varsigma-2\alpha R_f+\delta R_f^2}\Sigma^{-1}\big(\overline{R}-R_fe\big)$$<p>各參數在前文中有提及，這裡不再重述。將 $\omega^\ast$ 代入最優投資組合的風險表示式 $\sigma_p^2={\omega^\ast}' V\omega^\ast$ 中，經過化簡可以發現，最優投資組合的標準差 $\sigma_p$ 與投資目標 $\overline{R}_p$ 呈線性關係。若用圖形畫出（縱軸為 $\overline{R}_p$，橫軸為 $\sigma_p$），我們可以得到一條線性的效率前緣；而且經過嚴格推導可以發現，考慮無風險資產的效率前緣恰好與捨棄無風險資產的效率前緣相切，如下圖所示。</p>
+$$沒有圖$$<p>圖20.3：考慮無風險資產時的效率前緣
 如果所有的投資人對各資產未來收益率的估計是一致的，那麼理性投資人持有風險資產的相對比例應該是一樣的，風險偏好水平不同只會影響到持有無風險資產的比例。每個投資人持有的相同相對投資比例的風險資產組合即為市場投資組合（Market Portfolio），即圖 20.3 中切點的位置對應的投資組合，該投資組合中各資產的投資比例為 $\omega_m$，收益率為 $R_m$，收益率的期望值和變異數分別為 $\mathrm{E}(R_m)$ 和 $\sigma_m^2$。當然，現實中每個投資人對未來收益率的估計不同，自然每個人持有的風險資產組合的投資比例也不盡相同。圖中的切線，也就是市場投資組合與無風險資產之間的連線，被稱為資本市場線（Capital Market Line），可以表達為：</p>
-<p>公式 (20.10) 可以清楚地表達出投資組合收益率與風險之間的線性關係，風險越高，對應的收益率應該越高。</p>
+$$\mathrm{E}(R_p)=R_f+\frac{\mathrm{E}(R_m)-R_f}{\sigma_m}\sigma_p\label{eq:20.10}\tag{20.10}$$<p>公式 ($\ref{eq:20.10}$) 可以清楚地表達出投資組合收益率與風險之間的線性關係，風險越高，對應的收益率應該越高。</p>
 <p>深入探索 Markowitz 模型的最優解，可以得到一個奠定資本資產定價模型（Capital Asset Pricing Model，CAPM）的結論：對於任意的資產組合 $q$，期收益率 $R_q$ 滿足以下關係式：</p>
-$$\mathrm{E}$$<p>其中 $\beta_{qm}=\cfrac{\sigma(R_q,R_m)}{\sigma^2(R_m)}，\sigma(R_q,R_m)$ 為資產組合收率與市場投資組合收益率之間的共變異數。任意資產組合$q$ 可以是單個資產 $i$，這樣我們就可以得到 CAPM 模型之表示式：</p>
-$$\mathrm{E}$$<p>其中 $\beta_{im}=\cfrac{\sigma(R_i,R_m)}{\sigma^2(R_m)}$，可以反應出單個資產的系統風險水平，若 $\beta_{im}=1$，則資產 $i$ 的價格和市場投資組合的價格波動性是一致的；若 $|\beta_{im}|&lt;1$，則資產 $i$ 的價格波動程度小於市場投資組合；若 $|\beta_{im}|&gt;1$，資產 $i$ 的價格波動更大一些。$\beta$ 值為正說明資產 $i$ 的價格與市場投資組合價格同方向變動，反之則反向變動。CAPM 模型在現實中應用非常廣泛，很多券商會提供個股的 $\beta$ 值。在後面的章節中我們會詳細探討CAPM模型的用法，這裡就不作過多解釋。</p>
+$$\mathrm{E}(R_q)=R_f+\beta_{qm}[\mathrm{E}(R_m)-R_f]$$<p>其中 $\beta_{qm}=\cfrac{\sigma(R_q,R_m)}{\sigma^2(R_m)}，\sigma(R_q,R_m)$ 為資產組合收率與市場投資組合收益率之間的共變異數。任意資產組合$q$ 可以是單個資產 $i$，這樣我們就可以得到 CAPM 模型之表示式：</p>
+$$\mathrm{E}(R_i)=R_f+\beta_{im}[\mathrm{E}(R_m)-R_f]$$<p>其中 $\beta_{im}=\cfrac{\sigma(R_i,R_m)}{\sigma^2(R_m)}$，可以反應出單個資產的系統風險水平，若 $\beta_{im}=1$，則資產 $i$ 的價格和市場投資組合的價格波動性是一致的；若 $|\beta_{im}|&lt;1$，則資產 $i$ 的價格波動程度小於市場投資組合；若 $|\beta_{im}|&gt;1$，資產 $i$ 的價格波動更大一些。$\beta$ 值為正說明資產 $i$ 的價格與市場投資組合價格同方向變動，反之則反向變動。CAPM 模型在現實中應用非常廣泛，很多券商會提供個股的 $\beta$ 值。在後面的章節中我們會詳細探討 CAPM 模型的用法，這裡就不作過多解釋。</p>
 
 </div>
 </div>
